@@ -1,2 +1,19 @@
 .menu-toggle
-{ width: 3%; height: 5%; position: absolute; top: 10px; left: 10px; }
+{
+	position: absolute;
+	top: 10px; left: 10px;
+	cursor: pointer;
+	background-color: #EEEEEE;
+}
+
+.menu-option { cursor: pointer; }
+.floating-menu { transition: none; }
+.floating-menu > * { padding: 0.25rem 0 !important; }
+.toggled { border-style: inset; }
+.untoggled { border-style: outset; }
+.icon-wrapper { width: 32px; height: 32px; }
+
+@media screen and (min-width: 1200px)
+{
+	.icon-wrapper { width: 48px; height: 48px; }
+}
