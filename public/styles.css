@@ -16,8 +16,9 @@
 }
 
 .scene-item { margin: 0.25rem 0; border: 2px solid black; border-radius: 3px; }
-.toggled { border-style: inset; }
-.untoggled { border-style: outset; }
+/*Change to none when images are available*/
+.sticker-item { object-fit: scale-down; }
+.toggled { border-style: inset; } .untoggled { border-style: outset; }
 .icon-wrapper { width: 32px; height: 32px; }
 
 @media screen and (min-width: 1200px)

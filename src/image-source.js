@@ -21,6 +21,7 @@ ImageSource.sceneThumbHeight=ImageSource.sceneThumbWidth*(pageHeight/pageWidth);
 ImageSource.stickerThumbWidth=ImageSource.sceneThumbWidth/2;
 ImageSource.stickerThumbHeight=ImageSource.stickerThumbWidth;
 
+//Not supposed to be constant - remove when implementing size mapping!
 ImageSource.stickerWidth=ImageSource.stickerThumbWidth;
 ImageSource.stickerHeight=ImageSource.stickerThumbHeight;
 

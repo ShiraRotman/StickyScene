@@ -53,6 +53,7 @@ export default class Sticker extends React.Component
 				onMouseUp={this.controllerReleased} onMouseLeave={this.controllerLeft}
 				draggable={false} ref={this.element} style={
 			{
+				//TODO: Get dimensions from image data / file name
 				width: ImageSource.stickerWidth, height: ImageSource.stickerHeight,
 				position: "absolute", left: this.state.coordX, top: this.state.coordY
 			}}/>

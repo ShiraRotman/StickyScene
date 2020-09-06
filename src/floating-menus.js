@@ -91,12 +91,12 @@ export default class FloatingMenus extends React.Component
 					className="floating-menu" content=
 					{	
 						imageSource.getStickersThumbs(this.props.sceneID).map(thumb => 
-						<img src={thumb.path} alt="Sticker Thumb" key={thumb.id} id={thumb.id}
-							className="menu-item" onClick={this.handleStickerSelect} style={
-							{
-								width: ImageSource.stickerThumbWidth,
-								height: ImageSource.stickerThumbHeight
-							}}/>
+						<img src={thumb.path} alt="Sticker Thumb" onClick={this.handleStickerSelect}
+							className="menu-item sticker-item" key={thumb.id} id={thumb.id} style={
+						{
+							width: ImageSource.stickerThumbWidth,
+							height: ImageSource.stickerThumbHeight
+						}}/>
 					)}>
 				
 					<div className={toggleClassName} onClick={this.toggleMenus}>
