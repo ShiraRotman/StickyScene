@@ -1,7 +1,9 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
 
-import { ImageSource,getImageSource } from "./image-source.js";
+import ImageSource from "./image-source.js";
+import { imageSource } from "./utils.js";
+
 const OPTIONS_MENU_ICONS=["newscene","loadscene","savescene"];
 
 export default class FloatingMenus extends React.Component
@@ -10,12 +12,11 @@ export default class FloatingMenus extends React.Component
 	{ 
 		super(props); this.state={ shown: false, sceneSelection: false };
 		this.toggleMenus=this.toggleMenus.bind(this);
-		this.closeMenus=this.closeMenus.bind(this);
 		this.handleMenuOptionClick=this.handleMenuOptionClick.bind(this);
 		this.handleNewSceneSelect=this.handleNewSceneSelect.bind(this);
+		this.handleStickerSelect=this.handleStickerSelect.bind(this);
 	}
 	
-	closeMenus() { this.setState({ shown: false, sceneSelection: false }); }
 	toggleMenus()
 	{ 
 		this.setState(state => 
@@ -37,10 +38,17 @@ export default class FloatingMenus extends React.Component
 	
 	handleNewSceneSelect(event)
 	{
-		const menuEvent=new CustomEvent("newscene",
-		{ detail: { imageID: event.currentTarget.id } });
-		this.props.onMenuItemClick(menuEvent);
+		this.sendThumbClickEvent("newscene",event.currentTarget.id);
 		this.setState({ shown: false, sceneSelection: false });
+	}
+	
+	handleStickerSelect(event)
+	{ this.sendThumbClickEvent("addsticker",event.currentTarget.id); }
+	
+	sendThumbClickEvent(type,thumbID)
+	{
+		const menuEvent=new CustomEvent(type,{ detail: { imageID: thumbID } });
+		this.props.onMenuItemClick(menuEvent);
 	}
 	
 	render()
@@ -57,10 +65,10 @@ export default class FloatingMenus extends React.Component
 					alt="Menu Option" className="w-100 h-100"/>
 			</div>
 		);
-			
+		
 		if (this.state.sceneSelection)
 		{
-			verticalMenuArray=getImageSource().getAvailScenesThumbs();
+			verticalMenuArray=imageSource.getScenesThumbs();
 			verticalMenu=verticalMenu.concat(verticalMenuArray.map(thumb => 
 				<div className="menu-item scene-item" id={thumb.id} key={thumb.id}
 					onClick={this.handleNewSceneSelect} style={
@@ -75,12 +83,27 @@ export default class FloatingMenus extends React.Component
 		
 		return (
 			<Tippy interactive={true} arrow={false} offset={[0,0]} visible={this.state.shown}
-				placement="bottom-start" theme="light" className="floating-menu"
-				onClickOutside={this.closeMenus} content={verticalMenu}>
-				<div className={toggleClassName} onClick={this.toggleMenus}>
-					<img src={process.env.PUBLIC_URL + "icons/menus.svg"}
-						className="w-100 h-100" alt="Menu Button"/>
-				</div>
+				placement="bottom-start" className="floating-menu vertical-floating-menu"
+				theme="light" content={verticalMenu}>
+				
+				<Tippy interactive={true} arrow={false} offset={[0,0]} visible={this.state.shown}
+					placement="left-start" theme="light" maxWidth="none"
+					className="floating-menu" content=
+					{	
+						imageSource.getStickersThumbs(this.props.sceneID).map(thumb => 
+						<img src={thumb.path} alt="Sticker Thumb" key={thumb.id} id={thumb.id}
+							className="menu-item" onClick={this.handleStickerSelect} style={
+							{
+								width: ImageSource.stickerThumbWidth,
+								height: ImageSource.stickerThumbHeight
+							}}/>
+					)}>
+				
+					<div className={toggleClassName} onClick={this.toggleMenus}>
+						<img src={process.env.PUBLIC_URL + "icons/menus.svg"}
+							className="w-100 h-100" alt="Menu Button"/>
+					</div>
+				</Tippy>
 			</Tippy>
 		);
 	}
