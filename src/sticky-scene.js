@@ -1,7 +1,7 @@
 import React from "react";
 
 import FloatingMenus from "./floating-menus.js";
-import ImageSource from "./image-source.js";
+import Sticker from "./sticker.js";
 import { imageSource } from "./utils.js";
 
 export default class StickyScene extends React.Component
@@ -9,11 +9,7 @@ export default class StickyScene extends React.Component
 	constructor(props)
 	{ 
 		super(props);
-		this.state=
-		{
-			sceneID: "underwater-treasures", stickers: [],
-			scenePath: process.env.PUBLIC_URL + "/hardcoded/scenes/underwater-treasures.jpg"
-		};
+		this.state={ sceneID: "underwater-treasures", stickers: [] };
 		this.handleMenuItemClick=this.handleMenuItemClick.bind(this);
 	}
 	
@@ -22,11 +18,7 @@ export default class StickyScene extends React.Component
 		switch (event.type)
 		{
 			case "newscene":
-				this.setState(
-				{ 
-					sceneID: event.detail.imageID, stickers: [],
-					scenePath: imageSource.getSceneImage(event.detail.imageID)
-				});
+				this.setState({ sceneID: event.detail.imageID, stickers: [] });
 				break;
 			case "addsticker":
 				//Array.concat is wasteful!
@@ -41,15 +33,10 @@ export default class StickyScene extends React.Component
 	{
 		return (
 			<div className="w-100 h-100">
-				<img src={this.state.scenePath} className="w-100 h-100" alt="Background Scene"/>
+				<img src={imageSource.getSceneImage(this.state.sceneID)} alt="Background Scene"
+					className="w-100 h-100"/>
 				{this.state.stickers.map((sticker,index) => 
-					<img src={imageSource.getStickerImage(sticker)} alt="Sticker" 
-						key={"sticker-" + index} style={
-					{
-						width: ImageSource.stickerWidth, height: ImageSource.stickerHeight,
-						//Temporary random values
-						position: "absolute", top: Math.random()*800, left: Math.random()*450
-					}}/>
+					<Sticker stickerID={sticker} key={"sticker-" + index}/>
 				)}
 				<FloatingMenus sceneID={this.state.sceneID} onMenuItemClick={this.handleMenuItemClick}/>
 			</div>
