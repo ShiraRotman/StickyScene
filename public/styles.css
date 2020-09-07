@@ -1,11 +1,7 @@
-.menu-toggle
-{
-	position: absolute;
-	top: 10px; left: 10px;
-	cursor: pointer;
-	background-color: #EEEEEE;
-}
 
+.pseudo-button { cursor: pointer; background-color: #EEEEEE; }
+.menu-toggle { position: absolute; left: 10px; top: 10px; }
+.full-screen-button { position: absolute; right: 10px; top: 10px; }
 .menu-item { cursor: pointer; }
 .floating-menu { transition: none; }
 

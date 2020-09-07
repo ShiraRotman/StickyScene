@@ -1,6 +1,7 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
 
+import IconButton from "./icon-button.js";
 import ImageSource from "./image-source.js";
 import { imageSource } from "./utils.js";
 
@@ -53,10 +54,6 @@ export default class FloatingMenus extends React.Component
 	
 	render()
 	{
-		let toggleClassName="menu-toggle icon-wrapper";
-		if (this.state.shown) toggleClassName+=" toggled";
-		else toggleClassName+=" untoggled";
-		
 		let verticalMenuArray=(this.state.sceneSelection?["menuback"]:OPTIONS_MENU_ICONS);
 		let verticalMenu=verticalMenuArray.map(icon => 
 			<div className="menu-item icon-wrapper my-1" id={icon} key={icon}
@@ -98,11 +95,11 @@ export default class FloatingMenus extends React.Component
 							height: ImageSource.stickerThumbHeight
 						}}/>
 					)}>
-				
-					<div className={toggleClassName} onClick={this.toggleMenus}>
-						<img src={process.env.PUBLIC_URL + "icons/menus.svg"}
-							className="w-100 h-100" alt="Menu Button"/>
-					</div>
+					
+					<span className="menu-toggle">
+						<IconButton icon={process.env.PUBLIC_URL + "icons/menus.svg"} alt="Menus"
+							toggled={this.state.shown} onClick={this.toggleMenus}/>
+					</span>
 				</Tippy>
 			</Tippy>
 		);

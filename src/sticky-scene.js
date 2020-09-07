@@ -1,6 +1,7 @@
 import React from "react";
 
 import FloatingMenus from "./floating-menus.js";
+import IconButton from "./icon-button.js";
 import Sticker from "./sticker.js";
 import { imageSource } from "./utils.js";
 
@@ -39,6 +40,8 @@ export default class StickyScene extends React.Component
 					<Sticker stickerID={sticker} key={"sticker-" + index}/>
 				)}
 				<FloatingMenus sceneID={this.state.sceneID} onMenuItemClick={this.handleMenuItemClick}/>
+				<IconButton icon={process.env.PUBLIC_URL + "/icons/fullscreen.svg"} alt="Fullscreen Mode"
+					className="full-screen-button"/>
 			</div>
 		);
 	}
