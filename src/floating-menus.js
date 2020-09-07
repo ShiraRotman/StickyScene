@@ -58,7 +58,7 @@ export default class FloatingMenus extends React.Component
 		let verticalMenu=verticalMenuArray.map(icon => 
 			<div className="menu-item icon-wrapper my-1" id={icon} key={icon}
 				onClick={this.handleMenuOptionClick}>
-				<img src={process.env.PUBLIC_URL + "icons/" + icon + ".svg"}
+				<img src={process.env.PUBLIC_URL + "/icons/" + icon + ".svg"}
 					alt="Menu Option" className="w-100 h-100"/>
 			</div>
 		);
@@ -97,7 +97,7 @@ export default class FloatingMenus extends React.Component
 					)}>
 					
 					<span className="menu-toggle">
-						<IconButton icon={process.env.PUBLIC_URL + "icons/menus.svg"} alt="Menus"
+						<IconButton icon={process.env.PUBLIC_URL + "/icons/menus.svg"} alt="Menus"
 							toggled={this.state.shown} onClick={this.toggleMenus}/>
 					</span>
 				</Tippy>
