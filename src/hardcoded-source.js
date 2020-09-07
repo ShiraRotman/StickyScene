@@ -27,8 +27,11 @@ export default class HardcodedImageSource extends ImageSource
 		let thumbs=sceneStickersMap[sceneID]; if (!thumbs) thumbs=[];
 		if (!sceneOnly)
 		{
-			for (let sceneID in sceneStickersMap)
-				thumbs=thumbs.concat(sceneStickersMap[sceneID]);
+			for (let sceneImageID in sceneStickersMap)
+			{
+				if (sceneImageID!==sceneID)
+					thumbs=thumbs.concat(sceneStickersMap[sceneImageID]);
+			}
 		}
 		return thumbs.map(imageID => 
 		({ id: imageID, path: STICKERS_THUMBS_PATH + imageID + ".jpg" }));

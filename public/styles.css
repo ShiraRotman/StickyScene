@@ -15,9 +15,4 @@
 /*Change to none when images are available*/
 .sticker-item { object-fit: scale-down; }
 .toggled { border-style: inset; } .untoggled { border-style: outset; }
-.icon-wrapper { width: 32px; height: 32px; }
-
-@media screen and (min-width: 1200px)
-{
-	.icon-wrapper { width: 48px; height: 48px; }
-}
+.icon-wrapper { width: 48px; height: 48px; }
