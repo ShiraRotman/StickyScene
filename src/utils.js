@@ -10,13 +10,14 @@ const mouseEvents=[
 { type: "mousedown", listener: elemMouseButtonDown },
 { type: "mousemove", listener: elemMouseMoved },
 { type: "mouseup", listener: elemMouseButtonUp },
-{ type: "mouseleave", listener: elemInteractCancelled }];
+{ type: "mouseleave", listener: elemMouseMoved }];
 
 const pointerEvents=[
 { type: "pointerdown", listener: elemPointerDown },
 { type: "pointermove", listener: elemPointerMoved },
 { type: "pointerup", listener: elemPointerUp },
-{ type: "pointerout", listener: elemInteractCancelled }];
+{ type: "pointerleave", listener: elemPointerMoved },
+{ type: "pointercancel", listener: elemInteractCancelled }];
 
 const touchEvents=[
 { type: "touchstart", listener: elemTouchStarted },
@@ -125,6 +126,7 @@ function handleTouchMotionEvent(event,type,touchesList,hasToRemoveAttr)
 		}
 		if (found)
 		{
+			event.stopPropagation();
 			if (hasToRemoveAttr) element.removeAttribute(TOUCH_ID_ATTR);
 			sendCustomDragEvent(element,type,event[touchesList][index]);
 		}
@@ -133,7 +135,7 @@ function handleTouchMotionEvent(event,type,touchesList,hasToRemoveAttr)
 }
 
 function elemTouchMoved(event)
-{ handleTouchMotionEvent(event,DRAG_MOVE_EVENT_TYPE,"targetTouches"); }
+{ handleTouchMotionEvent(event,DRAG_MOVE_EVENT_TYPE,"changedTouches"); }
 
 function elemTouchEnded(event)
 { handleTouchMotionEvent(event,DRAG_END_EVENT_TYPE,"changedTouches",true); }
@@ -147,7 +149,8 @@ function elemInteractCancelled(event)
 
 const DragDropService=
 { 
-	registerDragEvents,unregisterDragEvents,TOUCH_ID_ATTR,DRAG_START_EVENT_TYPE,
-	DRAG_MOVE_EVENT_TYPE,DRAG_END_EVENT_TYPE,DRAG_CANCEL_EVENT_TYPE
-}
+	registerDragEvents,unregisterDragEvents,sendCustomDragEvent,TOUCH_ID_ATTR,
+	DRAG_START_EVENT_TYPE,DRAG_MOVE_EVENT_TYPE,DRAG_END_EVENT_TYPE,
+	DRAG_CANCEL_EVENT_TYPE
+};
 export { imageSource, DragDropService };
