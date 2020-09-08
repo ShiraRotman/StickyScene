@@ -26,7 +26,7 @@ export default class StickyScene extends React.Component
 	}
 	
 	sceneTouchMoved(event)
-	{ this.handleTouchEvent(event,DragDropService.DRAG_START_EVENT_TYPE); }
+	{ this.handleTouchEvent(event,DragDropService.DRAG_MOVE_EVENT_TYPE); }
 	
 	sceneTouchEnded(event)
 	{ this.handleTouchEvent(event,DragDropService.DRAG_END_EVENT_TYPE); }
