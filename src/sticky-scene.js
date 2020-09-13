@@ -2,7 +2,7 @@ import React from "react";
 import FloatingMenus from "./floating-menus.js";
 import FullScreenButton from "./full-screen-button.js";
 import Sticker from "./sticker.js";
-import { imageSource, DragDropService } from "./utils.js";
+import { imageSource } from "./utils.js";
 
 export default class StickyScene extends React.Component
 {
@@ -10,26 +10,8 @@ export default class StickyScene extends React.Component
 	{ 
 		super(props); 
 		this.state={ sceneID: "underwater-treasures", stickers: [] };
-		this.sceneTouchMoved=this.sceneTouchMoved.bind(this);
-		this.sceneTouchEnded=this.sceneTouchEnded.bind(this);
 		this.menuItemClicked=this.menuItemClicked.bind(this);
 	}
-	
-	handleTouchEvent(event,type)
-	{
-		for (let touch of event.changedTouches)
-		{
-			const element=touch.target;
-			if (element.hasAttribute(DragDropService.TOUCH_ID_ATTR))
-				DragDropService.sendCustomDragEvent(element,type,touch);
-		}
-	}
-	
-	sceneTouchMoved(event)
-	{ this.handleTouchEvent(event,DragDropService.DRAG_START_EVENT_TYPE); }
-	
-	sceneTouchEnded(event)
-	{ this.handleTouchEvent(event,DragDropService.DRAG_END_EVENT_TYPE); }
 	
 	menuItemClicked(event)
 	{
@@ -52,8 +34,7 @@ export default class StickyScene extends React.Component
 		return (
 			<div className="w-100 h-100">
 				<img src={imageSource.getSceneImage(this.state.sceneID)} alt="Background Scene"
-					className="w-100 h-100" onTouchMove={this.sceneTouchMoved}
-					onTouchEnd={this.sceneTouchEnded}/>
+					className="w-100 h-100"/>
 					
 				{this.state.stickers.map((sticker,index) => 
 					<Sticker stickerID={sticker} key={"sticker-" + index}/>

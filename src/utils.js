@@ -34,26 +34,26 @@ function validateElement(element)
 
 function handleRegUnreg(element,listenerFunc)
 {
-	if (window.PointerEvent)
-		pointerEvents.forEach(event => listenerFunc(event.type,event.listener));
-	else
+	if (window.TouchEvent)
 	{
 		mouseEvents.forEach(event => listenerFunc(event.type,event.listener));
-		if (window.TouchEvent)
-			touchEvents.forEach(event => listenerFunc(event.type,event.listener));
+		touchEvents.forEach(event => listenerFunc(event.type,event.listener));
 	}
+	else if (window.PointerEvent)
+		pointerEvents.forEach(event => listenerFunc(event.type,event.listener));
+	else mouseEvents.forEach(event => listenerFunc(event.type,event.listener));
 }
 
 function registerDragEvents(element)
 {
 	validateElement(element); element.draggable=false;
-	handleRegUnreg(element,element.addEventListener);
+	handleRegUnreg(element,element.addEventListener.bind(element));
 }
 
 function unregisterDragEvents(element)
 {
 	validateElement(element);
-	handleRegUnreg(element,element.removeEventListener);
+	handleRegUnreg(element,element.removeEventListener.bind(element));
 }
 
 function sendCustomDragEvent(element,type,detailSource)
@@ -112,33 +112,33 @@ function elemTouchStarted(event)
 	sendCustomDragEvent(element,DRAG_START_EVENT_TYPE,touch);
 }
 
-function handleTouchMotionEvent(event,type,touchesList,hasToRemoveAttr)
+function handleTouchMotionEvent(event,type,hasToRemoveAttr)
 {
-	event.preventDefault();
-	const element=event.target,touchID=element.getAttribute(TOUCH_ID_ATTR);
-	if (touchID)
+	event.preventDefault(); const element=event.target;
+	if (element.hasAttribute(TOUCH_ID_ATTR))
 	{
+		const touchID=Number.parseInt(element.getAttribute(TOUCH_ID_ATTR));
 		let found=false,index=0;
-		while ((!found)&&(index<event[touchesList].length))
+		while ((!found)&&(index<event.changedTouches.length))
 		{
-			if (event[touchesList][index].identifier===touchID) found=true;
+			if (event.changedTouches[index].identifier===touchID) found=true;
 			else index++;
 		}
 		if (found)
 		{
 			event.stopPropagation();
 			if (hasToRemoveAttr) element.removeAttribute(TOUCH_ID_ATTR);
-			sendCustomDragEvent(element,type,event[touchesList][index]);
+			sendCustomDragEvent(element,type,event.changedTouches[index]);
 		}
 		else elemInteractCancelled(event);
 	}
 }
 
 function elemTouchMoved(event)
-{ handleTouchMotionEvent(event,DRAG_MOVE_EVENT_TYPE,"changedTouches"); }
+{ handleTouchMotionEvent(event,DRAG_MOVE_EVENT_TYPE); }
 
 function elemTouchEnded(event)
-{ handleTouchMotionEvent(event,DRAG_END_EVENT_TYPE,"changedTouches",true); }
+{ handleTouchMotionEvent(event,DRAG_END_EVENT_TYPE,true); }
 
 function elemInteractCancelled(event)
 {
@@ -149,8 +149,7 @@ function elemInteractCancelled(event)
 
 const DragDropService=
 { 
-	registerDragEvents,unregisterDragEvents,sendCustomDragEvent,TOUCH_ID_ATTR,
-	DRAG_START_EVENT_TYPE,DRAG_MOVE_EVENT_TYPE,DRAG_END_EVENT_TYPE,
-	DRAG_CANCEL_EVENT_TYPE
+	registerDragEvents,unregisterDragEvents,DRAG_START_EVENT_TYPE,
+	DRAG_MOVE_EVENT_TYPE,DRAG_END_EVENT_TYPE,DRAG_CANCEL_EVENT_TYPE
 };
 export { imageSource, DragDropService };

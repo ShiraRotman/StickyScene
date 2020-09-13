@@ -37,11 +37,6 @@ export default class Sticker extends React.Component
 		const element=this.element.current;
 		this.dragEvents.forEach(event => element.addEventListener(event.type,
 				event.listener));
-		if (this.touchID)
-		{
-			element.setAttribute(DragDropService.TOUCH_ID_ATTR,this.touchID);
-			delete this.touchID;
-		}
 		DragDropService.registerDragEvents(element);
 	}
 	
@@ -51,8 +46,6 @@ export default class Sticker extends React.Component
 		DragDropService.unregisterDragEvents(element);
 		this.dragEvents.forEach(event => element.removeEventListener(event.type,
 				event.listener));
-		if (element.hasAttribute(DragDropService.TOUCH_ID_ATTR))
-			this.touchID=element.getAttribute(DragDropService.TOUCH_ID_ATTR);
 	}
 	
 	controllerPressed(event)
@@ -72,15 +65,20 @@ export default class Sticker extends React.Component
 	controllerLeft() { if (this.dragging) delete this.dragging; }
 	
 	controllerReleased(event)
-	{ if (this.dragging) { this.updatePosition(event); delete this.dragging; } }
+	{ 
+		if (this.dragging)
+		{ 
+			this.updatePosition(event); delete this.dragging;
+			const element=this.element.current;
+			this.setState({ coordX: element.style.left, coordY: element.style.top });
+		} 
+	}
 	
 	updatePosition(event)
 	{
-		this.setState(
-		{
-			coordX: event.detail.pageX-this.dragging.originX,
-			coordY: event.detail.pageY-this.dragging.originY
-		});
+		const element=this.element.current;
+		element.style.left=(event.detail.pageX-this.dragging.originX) + "px";
+		element.style.top=(event.detail.pageY-this.dragging.originY) + "px";
 	}
 	
 	render()
