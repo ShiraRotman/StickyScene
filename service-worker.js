@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/StickyScene/precache-manifest.9e5e829b8641cd1577220d8e0f8e318b.js"
+  "/StickyScene/precache-manifest.f1a7ad68009797a8475c1f09b893c882.js"
 );
 
 self.addEventListener('message', (event) => {

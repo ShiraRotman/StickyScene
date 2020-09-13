@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "baa134960daedfad2d9e74b1cd05ebe7",
+    "revision": "aff707e1a698d4efb03d9a9967284dfc",
     "url": "/StickyScene/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/StickyScene/static/js/2.6be3c0bd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "b22486f0ab9edcf40bd2",
-    "url": "/StickyScene/static/js/main.cac05bd6.chunk.js"
+    "revision": "2396e7383af614ca3a7a",
+    "url": "/StickyScene/static/js/main.7d9ad8b4.chunk.js"
   },
   {
     "revision": "3124004a0d250130714b",
