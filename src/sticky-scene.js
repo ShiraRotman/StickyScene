@@ -34,7 +34,7 @@ export default class StickyScene extends React.Component
 		return (
 			<div className="w-100 h-100">
 				<img src={imageSource.getSceneImage(this.state.sceneID)} alt="Background Scene"
-					className="w-100 h-100"/>
+					className="w-100 h-100" draggable={false}/>
 					
 				{this.state.stickers.map((sticker,index) => 
 					<Sticker stickerID={sticker} key={"sticker-" + index}/>
