@@ -2,15 +2,21 @@ import React from "react";
 import ImageSource from "./image-source.js";
 import { imageSource, DragDropService } from "./utils.js";
 
+const SCENE_BOUNDARY=0;
+
 export default class Sticker extends React.Component
 {
 	constructor(props)
 	{
 		super(props); this.element=React.createRef();
+		//TODO: Get dimensions from image data / file name
+		this.stickerWidth=ImageSource.stickerWidth; 
+		this.stickerHeight=ImageSource.stickerHeight;
+		
 		this.state=
 		{ 
-			coordX: (window.innerWidth-ImageSource.stickerWidth)/2,
-			coordY: (window.innerHeight-ImageSource.stickerHeight)/2
+			coordX: (window.innerWidth-this.stickerWidth)/2,
+			coordY: (window.innerHeight-this.stickerHeight)/2
 		};
 		
 		this.dragEvents=[
@@ -76,9 +82,17 @@ export default class Sticker extends React.Component
 	
 	updatePosition(event)
 	{
+		let coordX=event.detail.pageX-this.dragging.originX;
+		let coordY=event.detail.pageY-this.dragging.originY;
+		if (coordX<SCENE_BOUNDARY) coordX=SCENE_BOUNDARY;
+		else if (coordX+this.stickerWidth+SCENE_BOUNDARY>window.innerWidth)
+			coordX=window.innerWidth-this.stickerWidth-SCENE_BOUNDARY;
+		if (coordY<SCENE_BOUNDARY) coordY=SCENE_BOUNDARY;
+		else if (coordY+this.stickerHeight+SCENE_BOUNDARY>window.innerHeight)
+			coordY=window.innerHeight-this.stickerHeight-SCENE_BOUNDARY;
+		
 		const element=this.element.current;
-		element.style.left=(event.detail.pageX-this.dragging.originX) + "px";
-		element.style.top=(event.detail.pageY-this.dragging.originY) + "px";
+		element.style.left=coordX + "px"; element.style.top=coordY + "px";
 	}
 	
 	render()
@@ -87,8 +101,7 @@ export default class Sticker extends React.Component
 			<img src={imageSource.getStickerImage(this.props.stickerID)} alt="Sticker"
 				draggable={false} ref={this.element} style={
 			{
-				//TODO: Get dimensions from image data / file name
-				width: ImageSource.stickerWidth, height: ImageSource.stickerHeight,
+				width: this.stickerWidth, height: this.stickerHeight,
 				position: "absolute", left: this.state.coordX, top: this.state.coordY
 			}}/>
 		);
