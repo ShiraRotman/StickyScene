@@ -1,7 +1,6 @@
 import React from "react";
 import Tippy from "@tippyjs/react";
 
-import ImageSource from "./image-source.js";
 import { DragDropService } from "./drag-drop-service.js";
 import { imageSource, MatrixOperations } from "./utils.js";
 
@@ -37,16 +36,14 @@ export default class Sticker extends React.Component
 	constructor(props)
 	{
 		super(props); this.element=React.createRef();
-		//TODO: Get dimensions from image data / file name
-		this.stickerWidth=ImageSource.stickerWidth; 
-		this.stickerHeight=ImageSource.stickerHeight;
+		this.stickerData=imageSource.getStickerImageData(props.stickerID);
 		
 		this.state=
 		{
 			menuShown: false, 
 			transform: MatrixOperations.createIdentityMatrix(2),
-			coordX: (window.innerWidth-this.stickerWidth)/2,
-			coordY: (window.innerHeight-this.stickerHeight)/2
+			coordX: (window.innerWidth-this.stickerData.width)/2,
+			coordY: (window.innerHeight-this.stickerData.height)/2
 		};
 		
 		this.dragEvents=[
@@ -151,11 +148,11 @@ export default class Sticker extends React.Component
 		let coordX=event.detail.pageX-this.dragging.originX;
 		let coordY=event.detail.pageY-this.dragging.originY;
 		if (coordX<SCENE_BOUNDARY) coordX=SCENE_BOUNDARY;
-		else if (coordX+this.stickerWidth+SCENE_BOUNDARY>window.innerWidth)
-			coordX=window.innerWidth-this.stickerWidth-SCENE_BOUNDARY;
+		else if (coordX+this.stickerData.width+SCENE_BOUNDARY>window.innerWidth)
+			coordX=window.innerWidth-this.stickerData.width-SCENE_BOUNDARY;
 		if (coordY<SCENE_BOUNDARY) coordY=SCENE_BOUNDARY;
-		else if (coordY+this.stickerHeight+SCENE_BOUNDARY>window.innerHeight)
-			coordY=window.innerHeight-this.stickerHeight-SCENE_BOUNDARY;
+		else if (coordY+this.stickerData.height+SCENE_BOUNDARY>window.innerHeight)
+			coordY=window.innerHeight-this.stickerData.height-SCENE_BOUNDARY;
 		
 		const element=this.element.current;
 		element.style.left=coordX + "px"; element.style.top=coordY + "px";
@@ -185,10 +182,10 @@ export default class Sticker extends React.Component
 						operation.transform):operation.clickfunc}/>)
 				}>
 				
-				<img src={imageSource.getStickerImage(this.props.stickerID)} alt="Sticker"
-					draggable={false} ref={this.element} style={
+				<img src={this.stickerData.path} alt="Sticker" draggable={false}
+					ref={this.element} style={
 				{
-					width: this.stickerWidth, height: this.stickerHeight,
+					width: this.stickerData.width, height: this.stickerData.height,
 					position: "absolute", left: this.state.coordX, top: this.state.coordY,
 					transform: `matrix(${transform[0][0]},${transform[1][0]},${transform[0][1]},${transform[1][1]},0,0)`
 				}}/>

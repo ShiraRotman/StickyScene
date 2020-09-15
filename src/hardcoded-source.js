@@ -13,7 +13,17 @@ const sceneStickersMap= //For scaling, add a subpath
 	"space-cosmonaut": ["rocket-spaceship","alien-flying-saucer"]
 }
 
-//TODO: Map to size and add suffix to file names
+//Each array's entries have to be sorted by size to fasten mapping
+const imageSizesMap=
+{
+	"blue-black-fish": [{ width: 128, height: 64, suffix: "" }],
+	"dory-fish": [{ width: 128, height: 64, suffix: "" }],
+	"submarine": [{ width: 128, height: 64, suffix: "" }],
+	"seahorse": [{ width: 64, height: 128, suffix: "" }],
+	"rocket-spaceship": [{ width: 96, height: 96, suffix: "" }],
+	"alien-flying-saucer": [{ width: 128, height: 82, suffix: "" }]
+}
+
 export default class HardcodedImageSource extends ImageSource
 {
 	getScenesThumbs()
@@ -37,6 +47,24 @@ export default class HardcodedImageSource extends ImageSource
 		({ id: imageID, path: STICKERS_THUMBS_PATH + imageID + ".jpg" }));
 	}
 	
-	getSceneImage(sceneID) { return SCENES_IMAGES_PATH + sceneID + ".jpg"; }
-	getStickerImage(stickerID) { return STICKERS_IMAGES_PATH + stickerID + ".jpg"; }
+	//TODO: Map to size
+	static getImageData(imageID) { return imageSizesMap[imageID][0]; }
+	static getImageFilename(imageID,suffix) { return imageID + suffix + ".jpg"; }
+	
+	getSceneImage(sceneID)
+	{ 
+		return SCENES_IMAGES_PATH + HardcodedImageSource.getImageFilename(
+				sceneID,"");
+	}
+	
+	getStickerImageData(stickerID)
+	{
+		const imageData=HardcodedImageSource.getImageData(stickerID);
+		if (!imageData) return null;
+		else return { 
+			width: imageData.width, height: imageData.height,
+			path: STICKERS_IMAGES_PATH + HardcodedImageSource.getImageFilename(
+					stickerID,imageData.suffix)
+		};
+	}
 }

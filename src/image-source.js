@@ -6,7 +6,9 @@ export default class ImageSource
 {	
 	getScenesThumbs() { throw new TypeError(ABSTRACT_METHOD_ERROR_TEXT); }
 	getSceneImage(sceneID) { throw new TypeError(ABSTRACT_METHOD_ERROR_TEXT); }
-	getStickerImage(stickerID) { throw new TypeError(ABSTRACT_METHOD_ERROR_TEXT); }
+	
+	getStickerImageData(stickerID)
+	{ throw new TypeError(ABSTRACT_METHOD_ERROR_TEXT); }
 	
 	getStickersThumbs(sceneID,sceneOnly=true)
 	{ throw new TypeError(ABSTRACT_METHOD_ERROR_TEXT); }
@@ -20,10 +22,6 @@ ImageSource.sceneThumbHeight=ImageSource.sceneThumbWidth*(pageHeight/pageWidth);
 
 ImageSource.stickerThumbWidth=ImageSource.sceneThumbWidth/2;
 ImageSource.stickerThumbHeight=ImageSource.stickerThumbWidth;
-
-//Not supposed to be constant - remove when implementing size mapping!
-ImageSource.stickerWidth=ImageSource.stickerThumbWidth;
-ImageSource.stickerHeight=ImageSource.stickerThumbHeight;
 
 function getPageWidth() { return window.innerWidth; }
 function getPageHeight() { return window.innerHeight; }
