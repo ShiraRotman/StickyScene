@@ -66,6 +66,12 @@ export default class Sticker extends React.Component
 			type: DragDropService.DRAG_CANCEL_EVENT_TYPE,
 			listener: this.controllerLeft.bind(this)
 		}];
+		
+		this.operations=transforms.concat([
+		{
+			icon: "resetimage", title: "Reset", 
+			clickfunc: this.resetItemClicked.bind(this)
+		}]);
 	}
 	
 	componentDidMount() 
@@ -157,6 +163,9 @@ export default class Sticker extends React.Component
 		({ transform: MatrixOperations.multiplyMatrices(transform,state.transform) }));
 	}
 	
+	resetItemClicked()
+	{ this.setState({ transform: MatrixOperations.createIdentityMatrix(2) }); }
+	
 	render()
 	{
 		const transform=this.state.transform;		
@@ -164,11 +173,12 @@ export default class Sticker extends React.Component
 			<Tippy interactive={true} placement="top" visible={this.state.menuShown}
 				className="floating-menu" theme="light" maxWidth="none" content=
 				{
-					transforms.map(transformData => 
-					<img src={process.env.PUBLIC_URL + "/icons/" + transformData.icon + ".svg"}
-						alt="Sticker Operation" key={transformData.icon} title={transformData.title}
-						onClick={this.operationItemClicked.bind(this,transformData.transform)}
-						className="menu-item oper-item icon-wrapper"/>)
+					this.operations.map(operation => 
+					<img src={process.env.PUBLIC_URL + "/icons/" + operation.icon + ".svg"}
+						alt="Sticker Operation" key={operation.icon} title={operation.title}
+						className="menu-item oper-item icon-wrapper" onClick=
+						{operation.transform?this.operationItemClicked.bind(this,
+						operation.transform):operation.clickfunc}/>)
 				}>
 				
 				<img src={imageSource.getStickerImage(this.props.stickerID)} alt="Sticker"
