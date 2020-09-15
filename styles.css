@@ -12,7 +12,25 @@
 }
 
 .scene-item { margin: 0.25rem 0; border: 2px solid black; border-radius: 3px; }
+.oper-item { margin-left: 2px; margin-right: 2px; }
 /*Change to none when images are available*/
 .sticker-item { object-fit: scale-down; }
 .toggled { border-style: inset; } .untoggled { border-style: outset; }
 .icon-wrapper { width: 48px; height: 48px; }
+
+@-moz-document url-prefix()
+{
+	.untoggled
+	{
+		border-right: 3px solid #9A9A9A;
+		border-bottom: 3px solid #9A9A9A;
+		border-left: none; border-top: none;
+	}
+	
+	.toggled
+	{
+		border-left: 3px solid #9A9A9A;
+		border-top: 3px solid #9A9A9A;
+		border-right: none; border-bottom: none;
+	}
+}
