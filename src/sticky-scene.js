@@ -8,7 +8,7 @@ export default class StickyScene extends React.Component
 {
 	constructor(props)
 	{ 
-		super(props); 
+		super(props); this.nextIndex=0;
 		this.state={ sceneID: "underwater-treasures", stickers: [] };
 		this.menuItemClicked=this.menuItemClicked.bind(this);
 	}
@@ -19,14 +19,23 @@ export default class StickyScene extends React.Component
 		{
 			case "newscene":
 				this.setState({ sceneID: event.detail.imageID, stickers: [] });
-				break;
+				this.nextIndex=0; break;
 			case "addsticker":
 				//Array.concat is wasteful!
-				this.state.stickers.push(event.detail.imageID);
+				this.state.stickers.push(
+				{ index: this.nextIndex++, sticker: event.detail.imageID });
 				this.setState(state => ({ stickers: state.stickers }));
 				break;
 			default: break;
 		}
+	}
+	
+	stickerRemoved(index)
+	{
+		const arrayIndex=this.state.stickers.findIndex(stickerData => 
+				stickerData.index===index);
+		this.state.stickers.splice(arrayIndex,1);
+		this.setState(state => ({ stickers: state.stickers }));
 	}
 	
 	render()
@@ -36,8 +45,9 @@ export default class StickyScene extends React.Component
 				<img src={imageSource.getSceneImage(this.state.sceneID)} alt="Background Scene"
 					className="w-100 h-100" draggable={false}/>
 					
-				{this.state.stickers.map((sticker,index) => 
-					<Sticker stickerID={sticker} key={"sticker-" + index}/>
+				{this.state.stickers.map(stickerData => 
+					<Sticker stickerID={stickerData.sticker} key={"sticker-" + stickerData.index}
+						onRemove={this.stickerRemoved.bind(this,stickerData.index)}/>
 				)}
 				
 				<FloatingMenus sceneID={this.state.sceneID} onMenuItemClick={this.menuItemClicked}/>

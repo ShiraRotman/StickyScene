@@ -71,6 +71,10 @@ export default class Sticker extends React.Component
 		{
 			icon: "resetimage", title: "Reset", 
 			clickfunc: this.resetItemClicked.bind(this)
+		},
+		{ 
+			icon: "delete_image", title: "Remove Sticker", 
+			clickfunc: props.onRemove
 		}]);
 	}
 	
