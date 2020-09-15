@@ -76,6 +76,14 @@ function create2DRotationMatrix(angle,inRadians=false)
 	}
 }
 
+const screenOrientation=
+{
+	orientation: (window.screen.orientation || window.screen.mozOrientation ||
+			window.screen.msOrientation),
+	lockOrientation: (window.screen.lockOrientation || window.screen.mozLockOrientation || 
+			window.screen.msLockOrientation)
+};
+
 const MatrixOperations=
 { createIdentityMatrix, create2DScaleMatrix, create2DRotationMatrix, multiplyMatrices };
-export { imageSource, MatrixOperations };
+export { imageSource, screenOrientation, MatrixOperations };

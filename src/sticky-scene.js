@@ -2,7 +2,7 @@ import React from "react";
 import FloatingMenus from "./floating-menus.js";
 import FullScreenButton from "./full-screen-button.js";
 import Sticker from "./sticker.js";
-import { imageSource } from "./utils.js";
+import { imageSource, screenOrientation } from "./utils.js";
 
 export default class StickyScene extends React.Component
 {
@@ -11,6 +11,7 @@ export default class StickyScene extends React.Component
 		super(props); this.nextIndex=0;
 		this.state={ sceneID: "underwater-treasures", stickers: [] };
 		this.menuItemClicked=this.menuItemClicked.bind(this);
+		this.fullscrModeChanged=this.fullscrModeChanged.bind(this);
 	}
 	
 	menuItemClicked(event)
@@ -38,6 +39,24 @@ export default class StickyScene extends React.Component
 		this.setState(state => ({ stickers: state.stickers }));
 	}
 	
+	fullscrModeChanged(isFullScreen)
+	{
+		if ((isFullScreen)&&(!this.hasOwnProperty("locked")))
+		{
+			const orientation=screenOrientation.orientation;
+			if (orientation instanceof String)
+			{
+				const lockOrientation=screenOrientation.lockOrientation;
+				if (lockOrientation) this.locked=lockOrientation("landscape");
+			}
+			else if (orientation)
+			{
+				orientation.lock("landscape").then(() => this.locked=true).catch(
+						() => this.locked=false);
+			}
+		}
+	}
+	
 	render()
 	{
 		return (
@@ -51,7 +70,7 @@ export default class StickyScene extends React.Component
 				)}
 				
 				<FloatingMenus sceneID={this.state.sceneID} onMenuItemClick={this.menuItemClicked}/>
-				<FullScreenButton/>
+				<FullScreenButton onChange={this.fullscrModeChanged}/>
 			</div>
 		);
 	}

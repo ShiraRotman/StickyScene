@@ -24,7 +24,11 @@ export default class FullScreenButton extends React.Component
 	}
 	
 	fullscrModeChanged()
-	{ this.setState({ isFullScrMode: (fullscreen.fullscreenElement!==null) }); }
+	{
+		const isFullScreen=(fullscreen.fullscreenElement!==null);
+		if (this.props.onChange) this.props.onChange(isFullScreen);
+		this.setState({ isFullScrMode: isFullScreen });
+	}
 	
 	buttonClicked()
 	{
