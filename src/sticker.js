@@ -1,8 +1,36 @@
 import React from "react";
-import ImageSource from "./image-source.js";
-import { imageSource, DragDropService } from "./utils.js";
+import Tippy from "@tippyjs/react";
 
-const SCENE_BOUNDARY=0;
+import ImageSource from "./image-source.js";
+import { DragDropService } from "./drag-drop-service.js";
+import { imageSource, MatrixOperations } from "./utils.js";
+
+const SCENE_BOUNDARY=0,CLICK_TAP_THRESHOLD=500;
+const ROTATION_ANGLE=18,SCALE_FRACTION=0.1,transforms=[
+{ 
+	icon: "rotate_left", title: `Rotate left by ${ROTATION_ANGLE} degrees`,
+	transform: MatrixOperations.create2DRotationMatrix(ROTATION_ANGLE)
+},
+{ 
+	icon: "rotate_right", title: `Rotate right by ${ROTATION_ANGLE} degrees`,
+	transform: MatrixOperations.create2DRotationMatrix(-ROTATION_ANGLE)
+},
+{ 
+	icon: "rotate90", title: "Rotate left by 90 degrees",
+	transform: MatrixOperations.create2DRotationMatrix(90)
+},
+{ 
+	icon: "flipimage", title: "Flip (mirror image)",
+	transform: MatrixOperations.create2DScaleMatrix(-1,1)
+},
+{ 
+	icon: "scaleup", title: `Enlarge by ${SCALE_FRACTION*100}%`,
+	transform: MatrixOperations.create2DScaleMatrix(1+SCALE_FRACTION)
+},
+{ 
+	icon: "scaledown", title: `Shrink by ${SCALE_FRACTION*100}%`,
+	transform: MatrixOperations.create2DScaleMatrix(1-SCALE_FRACTION)
+}];
 
 export default class Sticker extends React.Component
 {
@@ -14,7 +42,9 @@ export default class Sticker extends React.Component
 		this.stickerHeight=ImageSource.stickerHeight;
 		
 		this.state=
-		{ 
+		{
+			menuShown: false, 
+			transform: MatrixOperations.createIdentityMatrix(2),
 			coordX: (window.innerWidth-this.stickerWidth)/2,
 			coordY: (window.innerHeight-this.stickerHeight)/2
 		};
@@ -43,6 +73,11 @@ export default class Sticker extends React.Component
 		const element=this.element.current;
 		this.dragEvents.forEach(event => element.addEventListener(event.type,
 				event.listener));
+		if (this.touchID)
+		{
+			element.setAttribute(DragDropService.TOUCH_ID_ATTR,this.touchID);
+			delete this.touchID;
+		}
 		DragDropService.registerDragEvents(element);
 	}
 	
@@ -52,6 +87,8 @@ export default class Sticker extends React.Component
 		DragDropService.unregisterDragEvents(element);
 		this.dragEvents.forEach(event => element.removeEventListener(event.type,
 				event.listener));
+		if (element.hasAttribute(DragDropService.TOUCH_ID_ATTR))
+			this.touchID=element.getAttribute(DragDropService.TOUCH_ID_ATTR);
 	}
 	
 	controllerPressed(event)
@@ -60,23 +97,42 @@ export default class Sticker extends React.Component
 		{
 			const bounds=this.element.current.getBoundingClientRect();
 			this.dragging=
-			{ 
+			{
+				startTime: Date.now(),
 				originX: event.detail.pageX-bounds.left,
 				originY: event.detail.pageY-bounds.top
 			};
 		}
 	}
 	
-	controllerMoved(event) { if (this.dragging) this.updatePosition(event); }
 	controllerLeft() { if (this.dragging) delete this.dragging; }
+	controllerMoved(event) 
+	{ 
+		if (this.dragging)
+		{
+			this.updatePosition(event); this.dragging.startTime=0;
+			if (this.state.menuShown) this.setState({ menuShown: false });
+		}
+	}
 	
 	controllerReleased(event)
 	{ 
 		if (this.dragging)
 		{ 
-			this.updatePosition(event); delete this.dragging;
 			const element=this.element.current;
-			this.setState({ coordX: element.style.left, coordY: element.style.top });
+			if ((this.dragging.startTime>0)&&(Date.now()-this.dragging.startTime<=
+					CLICK_TAP_THRESHOLD))
+				this.setState(state => ({ menuShown: !state.menuShown }));
+			else
+			{
+				this.updatePosition(event);
+				this.setState(
+				{
+					coordX: Number.parseInt(element.style.left),
+					coordY: Number.parseInt(element.style.top)
+				});
+			}
+			delete this.dragging;
 		} 
 	}
 	
@@ -95,15 +151,34 @@ export default class Sticker extends React.Component
 		element.style.left=coordX + "px"; element.style.top=coordY + "px";
 	}
 	
+	operationItemClicked(transform)
+	{
+		this.setState(state => 
+		({ transform: MatrixOperations.multiplyMatrices(transform,state.transform) }));
+	}
+	
 	render()
 	{
+		const transform=this.state.transform;		
 		return (
-			<img src={imageSource.getStickerImage(this.props.stickerID)} alt="Sticker"
-				draggable={false} ref={this.element} style={
-			{
-				width: this.stickerWidth, height: this.stickerHeight,
-				position: "absolute", left: this.state.coordX, top: this.state.coordY
-			}}/>
+			<Tippy interactive={true} placement="top" visible={this.state.menuShown}
+				className="floating-menu" theme="light" maxWidth="none" content=
+				{
+					transforms.map(transformData => 
+					<img src={process.env.PUBLIC_URL + "/icons/" + transformData.icon + ".svg"}
+						alt="Sticker Operation" key={transformData.icon} title={transformData.title}
+						onClick={this.operationItemClicked.bind(this,transformData.transform)}
+						className="menu-item oper-item icon-wrapper"/>)
+				}>
+				
+				<img src={imageSource.getStickerImage(this.props.stickerID)} alt="Sticker"
+					draggable={false} ref={this.element} style={
+				{
+					width: this.stickerWidth, height: this.stickerHeight,
+					position: "absolute", left: this.state.coordX, top: this.state.coordY,
+					transform: `matrix(${transform[0][0]},${transform[1][0]},${transform[0][1]},${transform[1][1]},0,0)`
+				}}/>
+			</Tippy>
 		);
 	}
 }

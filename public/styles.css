@@ -12,6 +12,7 @@
 }
 
 .scene-item { margin: 0.25rem 0; border: 2px solid black; border-radius: 3px; }
+.oper-item { margin-left: 2px; margin-right: 2px; }
 /*Change to none when images are available*/
 .sticker-item { object-fit: scale-down; }
 .toggled { border-style: inset; } .untoggled { border-style: outset; }
