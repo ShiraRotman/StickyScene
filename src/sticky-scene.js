@@ -1,15 +1,21 @@
 import React from "react";
+import Tippy from "@tippyjs/react";
+import { toast, ToastContainer } from "react-toastify";
+
 import FloatingMenus from "./floating-menus.js";
 import FullScreenButton from "./full-screen-button.js";
 import Sticker from "./sticker.js";
 import { imageSource, screenOrientation } from "./utils.js";
 
+const ORIENTATION_LOCK_FAILED_MSG="Screen orientation lock failed! Please " + 
+		"manually rotate your device to landscape if possible"
+
 export default class StickyScene extends React.Component
 {
 	constructor(props)
 	{ 
-		super(props); this.nextIndex=0;
-		this.state={ sceneID: "underwater-treasures", stickers: [] };
+		super(props); this.nextIndex=0; this.state=
+		{ sceneID: "underwater-treasures", stickers: [], isFullScreen: false };
 		this.menuItemClicked=this.menuItemClicked.bind(this);
 		this.fullscrModeChanged=this.fullscrModeChanged.bind(this);
 	}
@@ -48,13 +54,25 @@ export default class StickyScene extends React.Component
 			{
 				const lockOrientation=screenOrientation.lockOrientation;
 				if (lockOrientation) this.locked=lockOrientation("landscape");
+				else this.locked=false;
+				if (!this.locked) this.showToast(ORIENTATION_LOCK_FAILED_MSG);
 			}
 			else if (orientation)
 			{
-				orientation.lock("landscape").then(() => this.locked=true).catch(
-						() => this.locked=false);
+				orientation.lock("landscape").then(() => this.locked=true).catch(() => 
+				{ this.locked=false; this.showToast(ORIENTATION_LOCK_FAILED_MSG); });
 			}
 		}
+		this.setState({ isFullScreen: isFullScreen });
+	}
+	
+	showToast(message)
+	{
+		toast(message,
+		{
+			position: "bottom-center", hideProgressBar: true, draggable: false,
+			autoClose: 5000, pauseOnHover: true, closeOnClick: true,
+		});
 	}
 	
 	render()
@@ -70,7 +88,16 @@ export default class StickyScene extends React.Component
 				)}
 				
 				<FloatingMenus sceneID={this.state.sceneID} onMenuItemClick={this.menuItemClicked}/>
-				<FullScreenButton onChange={this.fullscrModeChanged}/>
+				<ToastContainer bodyClassName="toast-message" style={{ width: window.innerWidth/2 }}/>
+				
+				<Tippy visible={!this.state.isFullScreen} placement="auto" theme="light"
+					maxWidth="none" content="Switch to full screen for full enjoyment!">
+					
+					<span className="full-screen-button">
+						<FullScreenButton isFullScreen={this.state.isFullScreen}
+							onChange={this.fullscrModeChanged}/>
+					</span>
+				</Tippy>
 			</div>
 		);
 	}

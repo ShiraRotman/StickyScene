@@ -17,6 +17,7 @@
 .sticker-item { object-fit: scale-down; }
 .toggled { border-style: inset; } .untoggled { border-style: outset; }
 .icon-wrapper { width: 48px; height: 48px; }
+.toast-message { text-align: center; color: black; }
 
 @-moz-document url-prefix()
 {

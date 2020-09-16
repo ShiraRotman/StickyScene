@@ -6,7 +6,7 @@ export default class FullScreenButton extends React.Component
 {
 	constructor(props) 
 	{
-		super(props); this.state={ isFullScrMode: false }
+		super(props);
 		this.fullscrModeChanged=this.fullscrModeChanged.bind(this);
 		this.buttonClicked=this.buttonClicked.bind(this);
 	}
@@ -27,7 +27,6 @@ export default class FullScreenButton extends React.Component
 	{
 		const isFullScreen=(fullscreen.fullscreenElement!==null);
 		if (this.props.onChange) this.props.onChange(isFullScreen);
-		this.setState({ isFullScrMode: isFullScreen });
 	}
 	
 	buttonClicked()
@@ -41,8 +40,8 @@ export default class FullScreenButton extends React.Component
 	{
 		return (
 			<IconButton alt="Fullscreen Mode" onClick={this.buttonClicked}
-				className={"full-screen-button" + (!fullscreen.fullscreenEnabled?" d-none":"")}
-				icon={process.env.PUBLIC_URL + "/icons/" + (this.state.isFullScrMode?
+				className={!fullscreen.fullscreenEnabled?"d-none":""}
+				icon={process.env.PUBLIC_URL + "/icons/" + (this.props.isFullScreen?
 				"exitfullscr":"fullscreen") + ".svg"}/>
 		);
 	}
